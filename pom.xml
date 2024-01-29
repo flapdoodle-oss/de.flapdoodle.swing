@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.flapdoodle.swing</groupId>
     <artifactId>de.flapdoodle.swing</artifactId>
-    <name>kotlin javafx components</name>
+    <name>swing extensions</name>
     <version>1.1.2-SNAPSHOT</version>
 
-    <description>kfx</description>
+    <description>flapdoodle swing</description>
     <url>http://github.com/flapdoodle-oss/de.flapdoodle.swing</url>
 
     <licenses>
@@ -382,14 +382,6 @@
                     <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>${javafx.maven.plugin.version}</version>
-                <configuration>
-                    <mainClass>de.flapdoodle.kfx.App</mainClass>
-                </configuration>
-            </plugin>
 
             <!-- package as app -->
             <plugin>
@@ -404,7 +396,7 @@
                         </goals>
                         <configuration>
                             <classifier>app</classifier>
-                            <mainClass>de.flapdoodle.kfx.App</mainClass>
+                            <mainClass>de.flapdoodle.swing.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -443,44 +435,6 @@
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-                <!--
-
-                ubuntu hybrid gfx intel+nvidia
-                https://stackoverflow.com/questions/71365052/how-to-force-gpu-usage-with-javafx
-
-                env: DRI_PRIME=1;__NV_PRIME_RENDER_OFFLOAD=1;__GLX_VENDOR_LIBRARY_NAME=nvidia
-                args: -Dprism.forceGPU=true
-
-                -Djdk.gtk.version=2 -Dprism.verbose=true -Dprism.order=sw
-                -->
-                <plugin>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-maven-plugin</artifactId>
-                    <version>${javafx.maven.plugin.version}</version>
-                    <configuration>
-                        <options>
-                            <option>--add-opens</option>
-                            <option>javafx.graphics/javafx.scene=ALL-UNNAMED</option>
-                            <option>--add-opens</option>
-                            <option>javafx.base/com.sun.javafx.binding=ALL-UNNAMED</option>
-                            <option>--add-opens</option>
-                            <option>javafx.controls/javafx.scene.control.skin=ALL-UNNAMED</option>
-                            <!-- <option>javafx.controls/javafx.scene.control.skin=org.controlsfx.controls</option>-->
-                            <option>--add-exports</option>
-                            <option>javafx.controls/com.sun.javafx.scene=ALL-UNNAMED</option>
-                            <option>--add-exports</option>
-                            <option>javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED</option>
-                            <option>--add-exports</option>
-                            <option>javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
-                            <option>--add-exports</option>
-                            <option>javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED</option>
-                            <option>--add-exports</option>
-                            <option>javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED</option>
-                            <option>--add-exports</option>
-                            <option>javafx.graphics/com.sun.glass.ui=ALL-UNNAMED</option>
-                        </options>
                     </configuration>
                 </plugin>
             </plugins>
@@ -538,136 +492,12 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>headless-testfx-tests</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <forkCount>1</forkCount>
-                            <reuseForks>false</reuseForks>
-                            <threadCount>1</threadCount>
-                            <systemPropertyVariables>
-                                <glass.platform>Monocle</glass.platform>
-                                <monocle.platform>Headless</monocle.platform>
-                                <prism.order>sw</prism.order>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-        	<id>travis</id>
-        	<build>
-        		<plugins>
-		            <plugin>
-		                <groupId>org.apache.maven.plugins</groupId>
-		                <artifactId>maven-toolchains-plugin</artifactId>
-		                <version>1.1</version>
-		                <executions>
-		                    <execution>
-		                    	<phase>none</phase>
-		                        <goals>
-		                            <goal>toolchain</goal>
-		                        </goals>
-		                    </execution>
-		                </executions>
-		            </plugin>
-        		</plugins>
-        	</build>
-        </profile>
-        <profile>
-            <id>javafx-run-weighted-grid-sample</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.openjfx</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <configuration>
-                            <mainClass>de.flapdoodle.kfx.sampler.WeightGridPaneSampler</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>javafx-run-panning-windows</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.openjfx</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <configuration>
-                            <mainClass>de.flapdoodle.kfx.sampler.PanningWindowsSampler</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>javafx-run-graph-clone-sample</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.openjfx</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <configuration>
-                            <mainClass>de.flapdoodle.kfx.sampler.GraphCloneSampler</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>javafx-run-bounds-demo</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.openjfx</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <configuration>
-                            <mainClass>de.flapdoodle.kfx.demo.BoundsPlayground</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>javafx-run-nodeeditor</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.openjfx</groupId>
-                        <artifactId>javafx-maven-plugin</artifactId>
-                        <configuration>
-                            <mainClass>de.flapdoodle.kfx.sampler.NodeEditorSampler</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <properties>
         <maven.compiler.release>11</maven.compiler.release>
-        <javafx.version>17.0.9</javafx.version>
-        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
 
         <kotlin.version>1.8.22</kotlin.version>
-        <main.class>kotlin.KotlinHelloKt</main.class>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.languageVersion>1.8</kotlin.compiler.languageVersion>
         <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
@@ -703,57 +533,13 @@
             <version>3.24.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-swing-junit</artifactId>
-            <version>3.17.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-core</artifactId>
-            <version>4.0.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-junit5</artifactId>
-            <version>4.0.17</version>
-        </dependency>
-        <!-- jdk-9+181 for Java 9, jdk-11+26 for Java 11 -->
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>openjfx-monocle</artifactId>
-            <version>jdk-12.0.1+2</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.assertj</groupId>-->
+<!--            <artifactId>assertj-swing-junit</artifactId>-->
+<!--            <version>3.17.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>11.2.0</version>
-        </dependency>
-        
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
@@ -764,21 +550,6 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
-        <!--
-                <dependency>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-stdlib-jdk8</artifactId>
-                    <version>${kotlin.version}</version>
-                </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
-        -->
 
         <!-- command line parsing -->
         <dependency>
@@ -798,13 +569,5 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- ScenicView.show(...) -->
-<!--        <dependency>-->
-<!--            <groupId>net.raumzeitfalle.fx</groupId>-->
-<!--            <artifactId>scenic-view</artifactId>-->
-<!--            <version>11.0.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
     </dependencies>
 </project>
