@@ -13,11 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 @Extensions(@ExtendWith(GUITestExtension.class))
 public class SampleTest {
@@ -30,8 +25,6 @@ public class SampleTest {
 		robot = BasicRobot.robotWithNewAwtHierarchy();
 
 		JFrame frame = GuiActionRunner.execute(() -> new SampleApp("Sample"));
-		// IMPORTANT: note the call to 'robot()'
-		// we must use the Robot from AssertJSwingJUnitTestCase
 		window = new FrameFixture(robot, frame);
 		window.show(); // shows the frame to test
 	}
