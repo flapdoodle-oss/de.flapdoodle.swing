@@ -73,6 +73,8 @@ class MyGlassPane extends JComponent
 
 	//React to change button clicks.
 	public void itemStateChanged(ItemEvent e) {
+		System.out.println("isVisible: "+isVisible());
+		System.out.println("bounds: "+getBounds());
 		setVisible(e.getStateChange() == ItemEvent.SELECTED);
 	}
 
@@ -148,6 +150,8 @@ class CBListener extends MouseInputAdapter {
 	//A basic implementation of redispatching events.
 	private void redispatchMouseEvent(MouseEvent e,
 		boolean repaint) {
+		System.out.println("event: "+e);
+		
 		Point glassPanePoint = e.getPoint();
 		Container container = contentPane;
 		Point containerPoint = SwingUtilities.convertPoint(
