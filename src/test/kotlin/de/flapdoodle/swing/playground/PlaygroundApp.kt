@@ -3,9 +3,11 @@ package de.flapdoodle.swing.playground
 import de.flapdoodle.swing.ComponentTreeModel
 import de.flapdoodle.swing.events.MouseListenerAdapter
 import de.flapdoodle.swing.events.MouseMotionListenerAdapter
+import de.flapdoodle.swing.tips4j.DragLayout
 import de.flapdoodle.swing.tips4j.SwingUtils
 import java.awt.*
 import java.awt.event.MouseEvent
+import java.awt.geom.AffineTransform
 import java.util.concurrent.atomic.AtomicReference
 import javax.swing.*
 
@@ -53,6 +55,8 @@ object PlaygroundApp {
   private fun nodeEditor(): JComponent {
     val content = JPanel().also {
       it.layout = null
+      //it.layout = DragLayout()
+
 //      it.layout = AbsoluteLayout()
       it.addMouseListener(MouseListenerAdapter(
         pressed = { event ->
@@ -91,7 +95,28 @@ object PlaygroundApp {
   }
 
   private fun subWindow(): JComponent {
-    val ret = JPanel()
+    val ret = object : JPanel() {
+      override fun paintComponent(g: Graphics?) {
+        if (g is Graphics2D) {
+//          g.scale(0.9, 0.9)
+          val at = AffineTransform()
+          at.scale(0.9, 0.9)
+          g.transform(at)
+        }
+        super.paintComponent(g)
+      }
+
+      override fun update(g: Graphics?) {
+        if (g is Graphics2D) {
+//          g.scale(0.9, 0.9)
+          val at = AffineTransform()
+          at.scale(0.9, 0.9)
+          g.transform(at)
+        }
+        super.update(g)
+      }
+    }
+
     ret.insets.set(10, 10, 10, 10)
     ret.background = Color.RED
     ret.isOpaque = true
