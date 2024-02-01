@@ -3,13 +3,12 @@ package de.flapdoodle.swing.playground
 import de.flapdoodle.swing.ComponentTreeModel
 import de.flapdoodle.swing.events.MouseListenerAdapter
 import de.flapdoodle.swing.events.MouseMotionListenerAdapter
-import de.flapdoodle.swing.tips4j.DragLayout
-import de.flapdoodle.swing.tips4j.SwingUtils
 import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
 import java.util.concurrent.atomic.AtomicReference
 import javax.swing.*
+import javax.swing.plaf.LayerUI
 
 object PlaygroundApp {
   @JvmStatic
@@ -53,6 +52,11 @@ object PlaygroundApp {
   }
 
   private fun nodeEditor(): JComponent {
+    val subwindow = subWindow().also { win ->
+      win.preferredSize = Dimension(100, 100)
+      win.setBounds(350, 130, 100, 100)
+    }
+
     val content = JPanel().also {
       it.layout = null
       //it.layout = DragLayout()
@@ -66,10 +70,7 @@ object PlaygroundApp {
       ))
 //      it.bounds = Rectangle(0,0,200,200)
       it.preferredSize = Dimension(800, 600)
-      it.add(subWindow().also { win ->
-        win.preferredSize = Dimension(100, 100)
-        win.setBounds(350, 130, 100, 100)
-      })
+      it.add(subwindow)
       it.add(JButton("A").also { button ->
         //button.minimumSize = Dimension(300, 200)
         button.preferredSize = Dimension(300, 200)
@@ -89,8 +90,30 @@ object PlaygroundApp {
         button.setBounds(-50, 30, 100, 100)
       })
     }
+    val ui=object : LayerUI<JPanel>() {
+      override fun installUI(c: JComponent?) {
+        super.installUI(c)
+        // enable mouse motion events for the layer's subcomponents
+        (c as JLayer<*>).layerEventMask = AWTEvent.MOUSE_EVENT_MASK or AWTEvent.MOUSE_MOTION_EVENT_MASK
+      }
+
+      override fun uninstallUI(c: JComponent?) {
+        (c as JLayer<*>).layerEventMask = 0
+        
+        super.uninstallUI(c)
+      }
+
+      override fun eventDispatched(e: AWTEvent, l: JLayer<out JPanel>) {
+        if (e.source == subwindow && e is MouseEvent) {
+          println("subwindow --> "+e)
+//          e.consume()
+        }
+        super.eventDispatched(e, l)
+      }
+    }
+    val layer = JLayer<JPanel>(content, ui);
 //    val glassPane =
-    val ret = JScrollPane(content)
+    val ret = JScrollPane(layer)
     return ret
   }
 
